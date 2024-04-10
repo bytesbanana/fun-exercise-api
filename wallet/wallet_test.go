@@ -20,6 +20,7 @@ func (s *StubHandler) Wallets() ([]Wallet, error) {
 }
 
 func TestWallet(t *testing.T) {
+	t.Parallel()
 
 	t.Run("given unable to get wallets should return 500 and error message", func(t *testing.T) {
 		e := echo.New()
