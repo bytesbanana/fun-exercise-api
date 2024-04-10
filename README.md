@@ -84,7 +84,7 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 }
 ```
 
-### Challenge 1: API - Using environment variables
+### Challenge 1: API - Using environment variables ✅
 As a developer, we need to deploy the application on the cloud, we need to prepare the application and make it ready for the cloud environment.
 In 12 Factors App, it's recommended to store the configuration in the environment variables.
 
@@ -101,7 +101,7 @@ No hardcode of the connection string in the code
 ```
 
 
-### Challenge 2: API - Write Unit Test for /ap/v1/wallets
+### Challenge 2: API - Write Unit Test for /ap/v1/wallets ✅
 As a developer, we need to make sure the code is working as expected.
 
 This challenge is to write a unit test for the `/api/v1/wallets` endpoint and practice how to **Test Double**.
