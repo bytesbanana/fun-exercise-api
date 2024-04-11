@@ -24,7 +24,7 @@ type Err struct {
 	Message string `json:"message"`
 }
 
-// WalletByUserIdHandler
+// WalletByUserId
 //
 //	@Summary		Get all wallets by user id
 //	@Description	Get all wallets by user id
@@ -36,7 +36,7 @@ type Err struct {
 //	@Failure		400	{object}	Err
 //	@Failure		500	{object}	Err
 //	@Param   user_id  path	string	true "User id"
-func (h *Handler) WalletByUserIdHandler(c echo.Context) error {
+func (h *Handler) WalletByUserId(c echo.Context) error {
 	pUserId := c.Param("id")
 	userId, err := strconv.Atoi(pUserId)
 	if err != nil {

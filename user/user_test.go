@@ -70,7 +70,7 @@ func TestUser(t *testing.T) {
 				},
 			},
 		})
-		handlers.WalletByUserIdHandler(c)
+		handlers.WalletByUserId(c)
 
 		if rec.Code != http.StatusOK {
 			t.Errorf("expected status code %d but got %d", http.StatusOK, rec.Code)

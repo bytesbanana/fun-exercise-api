@@ -54,7 +54,7 @@ func TestWallet(t *testing.T) {
 		handlers := New(&StubWalletHandler{
 			err: echo.ErrInternalServerError,
 		})
-		handlers.WalletHandler(c)
+		handlers.GetWallet(c)
 		if rec.Code != http.StatusInternalServerError {
 			t.Errorf("expected status code %d but got %d", http.StatusInternalServerError, rec.Code)
 		}
@@ -92,7 +92,7 @@ func TestWallet(t *testing.T) {
 			},
 		})
 
-		handlers.WalletHandler(c)
+		handlers.GetWallet(c)
 		if rec.Code != http.StatusOK {
 			t.Errorf("expected status code %d but got %d", http.StatusOK, rec.Code)
 		}
@@ -133,7 +133,7 @@ func TestWallet(t *testing.T) {
 			},
 		})
 
-		handlers.WalletHandler(c)
+		handlers.GetWallet(c)
 		if rec.Code != http.StatusOK {
 			t.Errorf("expected status code %d but got %d", http.StatusOK, rec.Code)
 		}
@@ -153,7 +153,7 @@ func TestWallet(t *testing.T) {
 		})
 
 		handlers := New(&StubWalletHandler{})
-		handlers.WalletHandler(c)
+		handlers.GetWallet(c)
 		if rec.Code != http.StatusBadRequest {
 			t.Errorf("expected status code %d but got %d", http.StatusBadRequest, rec.Code)
 		}

@@ -28,7 +28,7 @@ type Err struct {
 	Message string `json:"message"`
 }
 
-// WalletHandler
+// GetWallet
 //
 //	@Summary		Get all wallets
 //	@Description	Get all wallets
@@ -40,7 +40,7 @@ type Err struct {
 //	@Failure		500	{object}	Err
 //	@Failure		400	{object}	Err
 //	@Param   wallet_type  query	string	false	"Wallet type"	Enums(Savings, CreditCard, CryptoWallet)
-func (h *Handler) WalletHandler(c echo.Context) error {
+func (h *Handler) GetWallet(c echo.Context) error {
 	walletType := c.QueryParam("wallet_type")
 
 	if walletType != "" {
