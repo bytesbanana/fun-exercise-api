@@ -150,7 +150,7 @@ This challenge is to use query parameters to filter the type of wallets `?wallet
 
 ```
 
-### Challenge 4: API - Using Path Parameters
+### Challenge 4: API - Using Path Parameters ✅
 As a user, I want to get the wallet for a specific user.
 
 This challenge is to use path parameters to get the wallet for a specific user `users/:id/wallets`
