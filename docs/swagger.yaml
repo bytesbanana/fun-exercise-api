@@ -40,6 +40,15 @@ paths:
       consumes:
       - application/json
       description: Get all wallets
+      parameters:
+      - description: Wallet type
+        enum:
+        - Savings
+        - CreditCard
+        - CryptoWallet
+        in: query
+        name: wallet_type
+        type: string
       produces:
       - application/json
       responses:

@@ -1,16 +1,23 @@
 package wallet
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
+
+var WalletType = map[string]string{
+	"Savings":      "Savings",
+	"CreditCard":   "Credit Card",
+	"CryptoWallet": "Crypto Wallet",
+}
 
 type Handler struct {
 	store Storer
 }
 
 type Storer interface {
-	Wallets() ([]Wallet, error)
+	Wallets(walletType string) ([]Wallet, error)
 }
 
 func New(db Storer) *Handler {
@@ -22,6 +29,7 @@ type Err struct {
 }
 
 // WalletHandler
+//
 //	@Summary		Get all wallets
 //	@Description	Get all wallets
 //	@Tags			wallet
@@ -30,8 +38,17 @@ type Err struct {
 //	@Success		200	{object}	Wallet
 //	@Router			/api/v1/wallets [get]
 //	@Failure		500	{object}	Err
+//	@Param   wallet_type  query	string	false	"Wallet type"	Enums(Savings, CreditCard, CryptoWallet)
 func (h *Handler) WalletHandler(c echo.Context) error {
-	wallets, err := h.store.Wallets()
+	walletType := c.QueryParam("wallet_type")
+
+	if walletType != "" {
+		if _, ok := WalletType[walletType]; !ok {
+			return c.JSON(http.StatusBadRequest, Err{Message: "Invalid wallet type"})
+		}
+	}
+
+	wallets, err := h.store.Wallets(WalletType[walletType])
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
