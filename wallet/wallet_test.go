@@ -11,12 +11,24 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type StubHandler struct {
+type StubWalletHandler struct {
 	wallets []Wallet
 	err     error
 }
 
-func (s *StubHandler) Wallets(walletType string) ([]Wallet, error) {
+func setup(t *testing.T, buildRequestFunc func() *http.Request) (echo.Context, *httptest.ResponseRecorder) {
+	t.Parallel()
+	e := echo.New()
+	req := buildRequestFunc()
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/wallets")
+
+	return c, rec
+}
+
+func (s *StubWalletHandler) Wallets(walletType string) ([]Wallet, error) {
 
 	if _, ok := WalletType[walletType]; ok {
 		filteredWallets := []Wallet{}
@@ -32,17 +44,14 @@ func (s *StubHandler) Wallets(walletType string) ([]Wallet, error) {
 }
 
 func TestWallet(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 
 	t.Run("given unable to get wallets should return 500 and error message", func(t *testing.T) {
-		e := echo.New()
-		req := httptest.NewRequest(http.MethodGet, "/", nil)
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/wallets")
+		c, rec := setup(t, func() *http.Request {
+			return httptest.NewRequest(http.MethodGet, "/", nil)
+		})
 
-		handlers := New(&StubHandler{
+		handlers := New(&StubWalletHandler{
 			err: echo.ErrInternalServerError,
 		})
 		handlers.WalletHandler(c)
@@ -58,14 +67,11 @@ func TestWallet(t *testing.T) {
 	})
 
 	t.Run("given user able to getting wallet should return all list of wallets", func(t *testing.T) {
-		e := echo.New()
-		req := httptest.NewRequest(http.MethodGet, "/", nil)
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/wallets")
+		c, rec := setup(t, func() *http.Request {
+			return httptest.NewRequest(http.MethodGet, "/", nil)
+		})
 
-		handlers := New(&StubHandler{
+		handlers := New(&StubWalletHandler{
 			wallets: []Wallet{
 				{
 					ID:         1,
@@ -102,14 +108,11 @@ func TestWallet(t *testing.T) {
 	t.Run("given wallet type should return list of wallets type", func(t *testing.T) {
 		q := make(url.Values)
 		q.Set("wallet_type", "Savings")
-		e := echo.New()
-		req := httptest.NewRequest(http.MethodGet, "/?"+q.Encode(), nil)
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/wallets")
+		c, rec := setup(t, func() *http.Request {
+			return httptest.NewRequest(http.MethodGet, "/?"+q.Encode(), nil)
+		})
 
-		handlers := New(&StubHandler{
+		handlers := New(&StubWalletHandler{
 			wallets: []Wallet{
 				{
 					ID:         1,
@@ -145,14 +148,11 @@ func TestWallet(t *testing.T) {
 	t.Run("given invalid wallet type should return 400 and error message", func(t *testing.T) {
 		q := make(url.Values)
 		q.Set("wallet_type", "InvalidWalletType")
-		e := echo.New()
-		req := httptest.NewRequest(http.MethodGet, "/?"+q.Encode(), nil)
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/wallets")
+		c, rec := setup(t, func() *http.Request {
+			return httptest.NewRequest(http.MethodGet, "/?"+q.Encode(), nil)
+		})
 
-		handlers := New(&StubHandler{})
+		handlers := New(&StubWalletHandler{})
 		handlers.WalletHandler(c)
 		if rec.Code != http.StatusBadRequest {
 			t.Errorf("expected status code %d but got %d", http.StatusBadRequest, rec.Code)
