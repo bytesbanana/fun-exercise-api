@@ -131,7 +131,7 @@ This challenge is to write a unit test for the `/api/v1/wallets` endpoint and pr
 ```
 
 
-### Challenge 3: API - Using Query Parameters
+### Challenge 3: API - Using Query Parameters ✅
 As a user, I want to filter the wallets based on the type of wallet.
 
 This challenge is to use query parameters to filter the type of wallets `?wallet_type=Saving`
