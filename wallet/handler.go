@@ -38,6 +38,7 @@ type Err struct {
 //	@Success		200	{object}	Wallet
 //	@Router			/api/v1/wallets [get]
 //	@Failure		500	{object}	Err
+//	@Failure		400	{object}	Err
 //	@Param   wallet_type  query	string	false	"Wallet type"	Enums(Savings, CreditCard, CryptoWallet)
 func (h *Handler) WalletHandler(c echo.Context) error {
 	walletType := c.QueryParam("wallet_type")

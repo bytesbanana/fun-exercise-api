@@ -48,6 +48,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/wallet.Wallet"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
