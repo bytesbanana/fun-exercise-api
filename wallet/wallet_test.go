@@ -19,16 +19,22 @@ func (s *StubHandler) Wallets() ([]Wallet, error) {
 	return s.wallets, s.err
 }
 
+func setup() (echo.Context, *httptest.ResponseRecorder) {
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	c.SetPath("/wallets")
+
+	return c, rec
+}
+
 func TestWallet(t *testing.T) {
 	t.Parallel()
 
 	t.Run("given unable to get wallets should return 500 and error message", func(t *testing.T) {
-		e := echo.New()
-		req := httptest.NewRequest(http.MethodGet, "/", nil)
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/wallets")
+		c, rec := setup()
 
 		handlers := New(&StubHandler{
 			err: echo.ErrInternalServerError,
@@ -46,12 +52,7 @@ func TestWallet(t *testing.T) {
 	})
 
 	t.Run("given user able to getting wallet should return list of wallets", func(t *testing.T) {
-		e := echo.New()
-		req := httptest.NewRequest(http.MethodGet, "/", nil)
-		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
-		c := e.NewContext(req, rec)
-		c.SetPath("/wallets")
+		c, rec := setup()
 
 		handlers := New(&StubHandler{
 			wallets: []Wallet{
@@ -81,7 +82,6 @@ func TestWallet(t *testing.T) {
 
 		resp := &[]Wallet{}
 		json.Unmarshal(rec.Body.Bytes(), resp)
-
 		if len(*resp) != 2 {
 			t.Errorf("expected status code %d but got %d", 1, len(*resp))
 		}
