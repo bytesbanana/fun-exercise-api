@@ -1,8 +1,9 @@
 package postgres
 
 import (
-	"github.com/KKGo-Software-engineering/fun-exercise-api/wallet"
 	"time"
+
+	"github.com/KKGo-Software-engineering/fun-exercise-api/wallet"
 )
 
 type Wallet struct {
