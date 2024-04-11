@@ -18,6 +18,7 @@ type Handler struct {
 
 type Storer interface {
 	Wallets(walletType string) ([]Wallet, error)
+	CreateWallet(wallet Wallet) (*Wallet, error)
 }
 
 func New(db Storer) *Handler {
@@ -54,4 +55,30 @@ func (h *Handler) GetWallet(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
 	return c.JSON(http.StatusOK, wallets)
+}
+
+// Create new wallet
+//
+// @Summary		Create new wallet
+// @Description	Create new wallet
+// @Tags			wallet
+// @Accept			json
+// @Produce		json
+// @Router			/api/v1/wallets [post]
+// @Success		200	{object}	Wallet
+// @Failure		400	{object}	Err
+// @Failure		500	{object}	Err
+// @Param   wallet  body		Wallet	true	"Wallet"
+func (h *Handler) CreateWallet(c echo.Context) error {
+
+	var w Wallet
+	if err := c.Bind(&w); err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
+	}
+
+	wallet, err := h.store.CreateWallet(w)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+	}
+	return c.JSON(http.StatusOK, wallet)
 }

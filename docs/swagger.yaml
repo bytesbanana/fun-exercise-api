@@ -30,7 +30,7 @@ definitions:
         example: John's Wallet
         type: string
       wallet_type:
-        example: Create Card
+        example: Credit Card
         type: string
     type: object
 host: localhost:1323
@@ -99,6 +99,35 @@ paths:
           schema:
             $ref: '#/definitions/wallet.Err'
       summary: Get all wallets
+      tags:
+      - wallet
+    post:
+      consumes:
+      - application/json
+      description: Create new wallet
+      parameters:
+      - description: Wallet
+        in: body
+        name: wallet
+        required: true
+        schema:
+          $ref: '#/definitions/wallet.Wallet'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wallet.Wallet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wallet.Err'
+      summary: Create new wallet
       tags:
       - wallet
 swagger: "2.0"

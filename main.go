@@ -24,7 +24,8 @@ func main() {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	walletHandler := wallet.New(p)
 	walletGroup := e.Group("/api/v1/wallets")
-	walletGroup.GET("/", walletHandler.GetWallet)
+	walletGroup.GET("", walletHandler.GetWallet)
+	walletGroup.POST("", walletHandler.CreateWallet)
 
 	userHandler := user.New(p)
 	userGroup := e.Group("/api/v1/users")

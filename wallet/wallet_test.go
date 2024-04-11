@@ -42,6 +42,13 @@ func (s *StubWalletHandler) Wallets(walletType string) ([]Wallet, error) {
 
 	return s.wallets, s.err
 }
+func (w *StubWalletHandler) CreateWallet(wallet Wallet) (*Wallet, error) {
+	lastWaleltId := w.wallets[len(w.wallets)-1].ID
+	wallet.ID = lastWaleltId + 1
+	wallet.CreatedAt = time.Now()
+	w.wallets = append(w.wallets, wallet)
+	return &w.wallets[len(w.wallets)-1], nil
+}
 
 func TestWallet(t *testing.T) {
 	// t.Parallel()
