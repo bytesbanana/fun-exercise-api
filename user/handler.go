@@ -28,13 +28,14 @@ type Err struct {
 //
 //	@Summary		Get all wallets by user id
 //	@Description	Get all wallets by user id
-//	@Router			/api/v1/users/:id/wallets [get]
-//	@Tags			users, wallet
+//	@Router			/api/v1/users/{user_id}/wallets [get]
+//	@Tags			users
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{object}	Wallet
+//	@Success		200	{object}	wallet.Wallet
 //	@Failure		400	{object}	Err
 //	@Failure		500	{object}	Err
+//	@Param   user_id  path	string	true "User id"
 func (h *Handler) WalletByUserIdHandler(c echo.Context) error {
 	pUserId := c.Param("id")
 	userId, err := strconv.Atoi(pUserId)

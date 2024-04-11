@@ -1,4 +1,9 @@
 definitions:
+  user.Err:
+    properties:
+      message:
+        type: string
+    type: object
   wallet.Err:
     properties:
       message:
@@ -35,6 +40,35 @@ info:
   title: Wallet API
   version: "1.0"
 paths:
+  /api/v1/users/{user_id}/wallets:
+    get:
+      consumes:
+      - application/json
+      description: Get all wallets by user id
+      parameters:
+      - description: User id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wallet.Wallet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.Err'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.Err'
+      summary: Get all wallets by user id
+      tags:
+      - users
   /api/v1/wallets:
     get:
       consumes:
