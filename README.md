@@ -164,7 +164,7 @@ Learn more about [Path Parameters](https://echo.labstack.com/guide/request#path-
 4. Swagger documentation should be implemented
 ```
 
-### Challenge 5: API - Using Request Body to Create a Wallet
+### Challenge 5: API - Using Request Body to Create a Wallet ✅
 As a user, I want to create a wallet.
 
 This challenge is to use the request body to create a wallet `/api/v1/wallets`
