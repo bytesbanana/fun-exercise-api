@@ -80,5 +80,5 @@ func (h *Handler) CreateWallet(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
-	return c.JSON(http.StatusOK, wallet)
+	return c.JSON(http.StatusCreated, wallet)
 }
