@@ -150,6 +150,59 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/wallets/{id}": {
+            "put": {
+                "description": "Update wallet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "Update wallet",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Wallet id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Wallet",
+                        "name": "wallet",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Wallet"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Wallet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -198,7 +251,7 @@ const docTemplate = `{
                 },
                 "wallet_type": {
                     "type": "string",
-                    "example": "Credit Card"
+                    "example": "CreditCard"
                 }
             }
         }

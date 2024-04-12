@@ -26,6 +26,7 @@ func main() {
 	walletGroup := e.Group("/api/v1/wallets")
 	walletGroup.GET("", walletHandler.GetWallet)
 	walletGroup.POST("", walletHandler.CreateWallet)
+	walletGroup.PUT("/:id", walletHandler.UpdateWallet)
 
 	userHandler := user.New(p)
 	userGroup := e.Group("/api/v1/users")

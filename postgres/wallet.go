@@ -97,7 +97,33 @@ func (p *Postgres) CreateWallet(w wallet.Wallet) (*wallet.Wallet, error) {
 		w.UserID, w.UserName, w.WalletName, w.WalletType, w.Balance, time.Now())
 
 	var newWallet wallet.Wallet
-	row.Scan(&newWallet.ID, &newWallet.UserID, &newWallet.UserName, &newWallet.WalletName, &newWallet.WalletType, &newWallet.Balance, &newWallet.CreatedAt)
+	err := row.Scan(&newWallet.ID, &newWallet.UserID, &newWallet.UserName, &newWallet.WalletName, &newWallet.WalletType, &newWallet.Balance, &newWallet.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
 
 	return &newWallet, nil
+}
+
+func (p *Postgres) UpdateWallet(w wallet.Wallet) (*wallet.Wallet, error) {
+
+	stmt := "UPDATE user_wallet SET user_id = $1, user_name = $2, wallet_name = $3, wallet_type = $4, balance = $5 WHERE id = $6 RETURNING *"
+
+	row := p.Db.QueryRow(
+		stmt,
+		w.UserID,
+		w.UserName,
+		w.WalletName,
+		w.WalletType,
+		w.Balance,
+		w.ID,
+	)
+	var updatedWallet wallet.Wallet
+	err := row.Scan(&updatedWallet.ID, &updatedWallet.UserID, &updatedWallet.UserName, &updatedWallet.WalletName, &updatedWallet.WalletType, &updatedWallet.Balance, &updatedWallet.CreatedAt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &updatedWallet, nil
 }

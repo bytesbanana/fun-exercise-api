@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -41,6 +42,17 @@ func (w *StubWalletHandler) CreateWallet(wallet Wallet) (*Wallet, error) {
 	wallet.CreatedAt = time.Now()
 	w.wallets = append(w.wallets, wallet)
 	return &w.wallets[len(w.wallets)-1], nil
+}
+
+func (w *StubWalletHandler) UpdateWallet(wallet Wallet) (*Wallet, error) {
+	for i, wl := range w.wallets {
+		if wl.ID == wallet.ID {
+			wl.Balance = wallet.Balance
+			w.wallets[i] = wallet
+			return &w.wallets[i], nil
+		}
+	}
+	return nil, nil
 }
 
 func setup(t *testing.T, buildRequestFunc func() *http.Request) (echo.Context, *httptest.ResponseRecorder) {
@@ -205,4 +217,63 @@ func TestWallet(t *testing.T) {
 			t.Errorf("expected status code %d but got %d", 1, resp.ID)
 		}
 	})
+
+	t.Run("given new wallet info should return updated wallet", func(t *testing.T) {
+		c, rec := setup(t, func() *http.Request {
+			walletJSON := `{
+				"user_id": 2,
+				"user_name": "John Doe",
+				"wallet_name": "John's Wallet",
+				"wallet_type": "CreditCard",
+				"balance": 1000
+			}`
+			return httptest.NewRequest(http.MethodPut, "/:id", strings.NewReader(walletJSON))
+		})
+		c.SetParamNames("id")
+		c.SetParamValues("1")
+
+		wallets := []Wallet{
+			{
+				ID:         1,
+				UserName:   "John Doe",
+				WalletName: "John's Wallet",
+				WalletType: "CreditCard",
+				Balance:    100,
+				CreatedAt:  time.Now(),
+			},
+			{
+				ID:         2,
+				UserName:   "John Doe",
+				WalletName: "John's Wallet",
+				WalletType: "CreditCard",
+				Balance:    100,
+				CreatedAt:  time.Now(),
+			},
+		}
+
+		handlers := New(&StubWalletHandler{
+			wallets: wallets,
+		})
+		handlers.UpdateWallet(c)
+
+		if rec.Code != http.StatusOK {
+			t.Errorf("expected status code %d but got %d", http.StatusOK, rec.Code)
+		}
+		resp := &Wallet{}
+		json.Unmarshal(rec.Body.Bytes(), resp)
+		want := &Wallet{
+			ID:         1,
+			UserID:     2,
+			UserName:   "John Doe",
+			WalletName: "John's Wallet",
+			WalletType: "CreditCard",
+			Balance:    1000,
+			CreatedAt:  wallets[0].CreatedAt,
+		}
+		if !reflect.DeepEqual(resp, want) {
+			t.Errorf("expected status code %v but got %v", want, resp)
+		}
+
+	})
+
 }

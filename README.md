@@ -177,7 +177,7 @@ This challenge is to use the request body to create a wallet `/api/v1/wallets`
 4. Wallet should be created in the database
 ```
 
-### Challenge 6: API - Using Request Body to Update a Wallet
+### Challenge 6: API - Using Request Body to Update a Wallet ✅
 As a user, I want to update a wallet.
 
 This challenge is to use the request body to update a wallet `/api/v1/wallets`

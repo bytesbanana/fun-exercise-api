@@ -2,6 +2,7 @@ package wallet
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -19,6 +20,7 @@ type Handler struct {
 type Storer interface {
 	Wallets(walletType string) ([]Wallet, error)
 	CreateWallet(wallet Wallet) (*Wallet, error)
+	UpdateWallet(wallet Wallet) (*Wallet, error)
 }
 
 func New(db Storer) *Handler {
@@ -81,4 +83,38 @@ func (h *Handler) CreateWallet(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
 	return c.JSON(http.StatusCreated, wallet)
+}
+
+// UpdateWallet
+//
+// @Summary		Update wallet
+// @Description	Update wallet
+// @Tags			wallet
+// @Accept			json
+// @Produce		json
+// @Router			/api/v1/wallets/{id} [put]
+// @Success		200	{object}	Wallet
+// @Failure		400	{object}	Err
+// @Failure		500	{object}	Err
+// @Param   id  path		int	true	"Wallet id"
+// @Param   wallet  body		Wallet	true	"Wallet"
+func (h *Handler) UpdateWallet(c echo.Context) error {
+
+	var w Wallet
+	if err := c.Bind(&w); err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
+	}
+	pWalletId := c.Param("id")
+	walletId, err := strconv.Atoi(pWalletId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: "Invalid wallet id"})
+	}
+	w.ID = walletId
+
+	wallet, err := h.store.UpdateWallet(w)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, wallet)
 }
