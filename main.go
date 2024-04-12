@@ -1,10 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/KKGo-Software-engineering/fun-exercise-api/postgres"
 	"github.com/KKGo-Software-engineering/fun-exercise-api/user"
 	"github.com/KKGo-Software-engineering/fun-exercise-api/wallet"
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 
 	_ "github.com/KKGo-Software-engineering/fun-exercise-api/docs"
 	echoSwagger "github.com/swaggo/echo-swagger"
@@ -15,6 +19,15 @@ import (
 // @description	Sophisticated Wallet API
 // @host			localhost:1323
 func main() {
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("fatal error config file: %s", err))
+	}
+
 	p, err := postgres.New()
 	if err != nil {
 		panic(err)

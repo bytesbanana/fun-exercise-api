@@ -4,10 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
-	"strconv"
 
 	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 )
 
 type Postgres struct {
@@ -15,14 +14,11 @@ type Postgres struct {
 }
 
 func New() (*Postgres, error) {
-	host := os.Getenv("DB_HOST")
-	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
-	if err != nil {
-		log.Fatalf("failed to convert PORT: %v", err)
-	}
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
+	host := viper.GetString("db.host")
+	port := viper.GetInt("db.port")
+	user := viper.GetString("db.user")
+	password := viper.GetString("db.password")
+	dbname := viper.GetString("db.name")
 
 	databaseSource := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
