@@ -21,6 +21,7 @@ type Storer interface {
 	Wallets(walletType string) ([]Wallet, error)
 	CreateWallet(wallet Wallet) (*Wallet, error)
 	UpdateWallet(wallet Wallet) (*Wallet, error)
+	DeleteWallet(id int) error
 }
 
 func New(db Storer) *Handler {
@@ -117,4 +118,30 @@ func (h *Handler) UpdateWallet(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, wallet)
+}
+
+// DeleteWallet
+//
+// @Summary		Delete wallet
+// @Description	Delete wallet
+// @Tags			wallet
+// @Accept			json
+// @Produce		json
+// @Router			/api/v1/wallets/{id} [delete]
+// @Success		204
+// @Failure		400	{object}	Err
+// @Failure		500	{object}	Err
+// @Param   id  path		int	true	"Wallet id"
+func (h *Handler) DeleteWallet(c echo.Context) error {
+	pWalletId := c.Param("id")
+	walletId, err := strconv.Atoi(pWalletId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Err{Message: "Invalid wallet id"})
+	}
+
+	if err := h.store.DeleteWallet(walletId); err != nil {
+		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }

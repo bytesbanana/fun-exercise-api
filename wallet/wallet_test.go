@@ -2,6 +2,7 @@ package wallet
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -53,6 +54,23 @@ func (w *StubWalletHandler) UpdateWallet(wallet Wallet) (*Wallet, error) {
 		}
 	}
 	return nil, nil
+}
+
+func (w *StubWalletHandler) DeleteWallet(walletId int) error {
+	removedIndex := -1
+	for i, wl := range w.wallets {
+		if wl.ID == walletId {
+			removedIndex = i
+			w.wallets = append(w.wallets[:i], w.wallets[i+1:]...)
+			return nil
+		}
+	}
+
+	if removedIndex == -1 {
+		return errors.New("wallet not found")
+	}
+
+	return nil
 }
 
 func setup(t *testing.T, buildRequestFunc func() *http.Request) (echo.Context, *httptest.ResponseRecorder) {
@@ -276,4 +294,67 @@ func TestWallet(t *testing.T) {
 
 	})
 
+	t.Run("given wallet id should delete wallet", func(t *testing.T) {
+		c, rec := setup(t, func() *http.Request {
+			return httptest.NewRequest(http.MethodDelete, "/:id", nil)
+		})
+		c.SetParamNames("id")
+		c.SetParamValues("1")
+
+		wallets := []Wallet{
+			{
+				ID:         1,
+				UserName:   "John Doe",
+				WalletName: "John's Wallet",
+				WalletType: "CreditCard",
+				Balance:    100,
+				CreatedAt:  time.Now(),
+			},
+			{
+				ID:         2,
+				UserName:   "John Doe",
+				WalletName: "John's Wallet",
+				WalletType: "CreditCard",
+				Balance:    100,
+				CreatedAt:  time.Now(),
+			},
+		}
+
+		handlers := New(&StubWalletHandler{
+			wallets: wallets,
+		})
+		handlers.DeleteWallet(c)
+
+		if rec.Code != http.StatusNoContent {
+			t.Errorf("expected status code %d but got %d", http.StatusNoContent, rec.Code)
+		}
+
+	})
+
+	t.Run("given wallet id that does not exist should return error", func(t *testing.T) {
+		c, rec := setup(t, func() *http.Request {
+			return httptest.NewRequest(http.MethodDelete, "/:id", nil)
+		})
+		c.SetParamNames("id")
+		c.SetParamValues("1")
+
+		wallets := []Wallet{
+			{
+				ID:         2,
+				UserName:   "John Doe",
+				WalletName: "John's Wallet",
+				WalletType: "CreditCard",
+				Balance:    100,
+				CreatedAt:  time.Now(),
+			},
+		}
+
+		handlers := New(&StubWalletHandler{
+			wallets: wallets,
+		})
+		handlers.DeleteWallet(c)
+		if rec.Code != http.StatusInternalServerError {
+			t.Errorf("expected status code %d but got %d", http.StatusInternalServerError, rec.Code)
+		}
+	})
 }

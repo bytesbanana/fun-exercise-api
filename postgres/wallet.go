@@ -127,3 +127,24 @@ func (p *Postgres) UpdateWallet(w wallet.Wallet) (*wallet.Wallet, error) {
 
 	return &updatedWallet, nil
 }
+
+func (p *Postgres) DeleteWallet(id int) error {
+	var rows *sql.Rows
+	var err error
+	rows, err = p.Db.Query("SELECT * FROM user_wallet WHERE id = $1", id)
+	if err != nil {
+		return errors.New("failed to get wallets")
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return errors.New("wallet not found")
+	}
+
+	stmt := "DELETE FROM user_wallet WHERE id = $1"
+	_, err = p.Db.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

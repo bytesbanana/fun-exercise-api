@@ -40,6 +40,7 @@ func main() {
 	walletGroup.GET("", walletHandler.GetWallet)
 	walletGroup.POST("", walletHandler.CreateWallet)
 	walletGroup.PUT("/:id", walletHandler.UpdateWallet)
+	walletGroup.DELETE("/:id", walletHandler.DeleteWallet)
 
 	userHandler := user.New(p)
 	userGroup := e.Group("/api/v1/users")

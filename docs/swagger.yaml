@@ -131,6 +131,32 @@ paths:
       tags:
       - wallet
   /api/v1/wallets/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete wallet
+      parameters:
+      - description: Wallet id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wallet.Err'
+      summary: Delete wallet
+      tags:
+      - wallet
     put:
       consumes:
       - application/json
