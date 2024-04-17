@@ -190,7 +190,7 @@ This challenge is to use the request body to update a wallet `/api/v1/wallets`
 4. Wallet should be updated in the database
 ```
 
-### Challenge 7: API - Delete a Wallet
+### Challenge 7: API - Delete a Wallet ✅
 As a user, I want to delete a wallet out of specific user.
 
 This challenge is to use the request body to delete a wallet `/api/v1/users/:id/wallets`
@@ -201,7 +201,7 @@ This challenge is to use the request body to delete a wallet `/api/v1/users/:id/
 2. Wallet should be deleted in the database
 ```
 
-### Challenge 8: DevOps - Dockerize the App - Multi-Stage Dockerfile
+### Challenge 8: DevOps - Dockerize the App - Multi-Stage Dockerfile ✅
 As a DevOps, we need to prepare the application for deployment and make it ready for the cloud environment.
 
 This challenge is to create a Dockerfile for the `Go` application and make sure image size is optimized.
