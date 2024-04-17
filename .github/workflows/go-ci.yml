@@ -1,18 +1,27 @@
 name: Go CI
 
-on: [push]
+on:
+    push: 
+        branches: [main]
+    pull_request:
+
 
 jobs:
-    build:
+    # Create job to run tests and linting
+    go-ci:
         runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                go-version: ['1.21.8', '1.22.1']
         steps:
-            - uses: actions/checkout@v4
-            - name: Setup Go ${{ matrix.go-version }}
-              uses: actions/setup-go@v4
+            - name: Checkout codebase
+              uses: actions/checkout@v2
+
+            - name: Set up Go
+              uses: actions/setup-go@v2
               with:
-                  go-version: ${{ matrix.go-version }}
-            - name: Display Go version
-              run: go version
+                go-version: 1.21.1
+
+            - name: Run tests
+              run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+            - name: Linting
+              run: golangci-lint run ./...
+
